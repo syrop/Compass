@@ -4,6 +4,6 @@
 /local.properties
 /build
 *.apk
-navigator/release/
-navigator/schemas/
-navigator/fabric.properties
+compass/release/
+compass/schemas/
+compass/fabric.properties

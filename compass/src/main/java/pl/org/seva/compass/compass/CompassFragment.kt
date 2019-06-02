@@ -45,6 +45,7 @@ class CompassFragment : Fragment(R.layout.fr_compass) {
                 distance_layout.visibility = View.GONE
                 arrow.visibility = View.GONE
                 viewModel.direction.removeObservers(this)
+                bearing = null
             }
             else {
                 requestLocationPermission {

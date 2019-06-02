@@ -50,5 +50,4 @@ class RotationImageView @JvmOverloads constructor(
     companion object {
         private const val DURATION_MS = 210L
     }
-
 }
