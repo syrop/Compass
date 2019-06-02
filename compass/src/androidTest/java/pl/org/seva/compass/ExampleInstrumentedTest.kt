@@ -1,6 +1,5 @@
 package pl.org.seva.compass
 
-
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Test
