@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Compass</string>
+
+    <!-- Compass fragment -->
+    <string name="compass_fragment_address">Address</string>
+    <string name="compass_fragment_coordinates">Coordinates</string>
+    <string name="compass_fragment_distance">Distance [km]</string>
+
+    <!-- Pick destination fragment -->
+    <string name="pick_destination_label">Select location</string>
+    <string name="pick_destination_select">Select your destination</string>
+</resources>
