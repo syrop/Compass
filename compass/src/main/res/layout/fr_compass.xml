@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:importantForAutofill="noExcludeDescendants"
             android:focusable="false"
-            android:inputType="none"
+            android:inputType="none|textNoSuggestions"
             android:hint="@string/compass_fragment_address"
             tools:targetApi="o" />
 
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:importantForAutofill="noExcludeDescendants"
             android:focusable="false"
-            android:inputType="none"
+            android:inputType="none|textNoSuggestions"
             android:hint="@string/compass_fragment_distance"
             tools:targetApi="o" />
     </com.google.android.material.textfield.TextInputLayout>
