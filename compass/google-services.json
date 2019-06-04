@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "246580999329",
+    "firebase_url": "https://compass-242411.firebaseio.com",
+    "project_id": "compass-242411",
+    "storage_bucket": "compass-242411.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246580999329:android:675165dc3c45b157",
+        "android_client_info": {
+          "package_name": "pl.org.seva.compass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246580999329-5d8mmo7ffmhjdtr1e1ci9e5ql8e6ppff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvak2ZrKhLn3ZSb245PQkQyck4L2-py0w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246580999329-5d8mmo7ffmhjdtr1e1ci9e5ql8e6ppff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
