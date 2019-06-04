@@ -42,7 +42,7 @@ class InteractiveMapHolder : MapHolder() {
                         1)[0]) {
                     getAddressLine(maxAddressLineIndex)
                 }
-            } catch (ex: Exception) {
+            } catch (e: Exception) {
                 DEFAULT_ADDRESS
             }
             onLocationSet(DestinationModel(latLng, address))

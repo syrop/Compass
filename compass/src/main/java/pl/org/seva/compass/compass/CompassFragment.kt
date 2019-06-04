@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
 import pl.org.seva.compass.main.extension.invoke
 import kotlinx.android.synthetic.main.fr_compass.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import pl.org.seva.compass.R
 import pl.org.seva.compass.main.extension.nav
 import pl.org.seva.compass.main.extension.set
@@ -35,9 +36,11 @@ class CompassFragment : Fragment(R.layout.fr_compass) {
 
     private val viewModel by navGraphViewModels<CompassViewModel>(R.id.nav_graph)
 
+    @ExperimentalCoroutinesApi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        var bearing: Float? = null
+        var lastBearing: Float? = null
+        var lastRotation: Float? = null
         address { nav(R.id.action_compassFragment_to_destinationPickerFragment) }
         (viewModel.destination to this) { destination ->
             address set (destination?.address)
@@ -45,7 +48,7 @@ class CompassFragment : Fragment(R.layout.fr_compass) {
                 distance_layout.visibility = View.GONE
                 arrow.visibility = View.GONE
                 viewModel.direction.removeObservers(this)
-                bearing = null
+                lastBearing = null
             }
             else {
                 requestLocationPermission {
@@ -53,14 +56,16 @@ class CompassFragment : Fragment(R.layout.fr_compass) {
                     arrow.visibility = View.VISIBLE
                     (viewModel.direction to this) { direction ->
                         distance set direction.distance.toString()
-                        bearing = direction.degrees
+                        lastRotation?.let { arrow.rotate(it - direction.degrees ) }
+                        lastBearing = direction.degrees
                     }
                 }
             }
         }
         (viewModel.rotation to this) { rotation ->
-            bearing?.let { arrow.rotate(rotation - it) }
+            lastBearing?.let { arrow.rotate(rotation - it) }
             compass.rotate(rotation)
+            lastRotation = rotation
         }
     }
 
