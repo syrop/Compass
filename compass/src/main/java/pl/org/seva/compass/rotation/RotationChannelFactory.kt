@@ -26,14 +26,14 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.sendBlocking
 
-class RotationChannelFactory(ctx: Context) {
+class RotationChannelFactory(private val ctx: Context) {
 
-    private val manager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val magneticSensor: Sensor? = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
-    private val accelSensor: Sensor? = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
+    @Suppress("UNCHECKED_CAST")
     @ExperimentalCoroutinesApi
     fun getRotationChannel(): ReceiveChannel<Float> = Channel<Float>(Channel.CONFLATED).also { channel ->
+        val manager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val magneticSensor: Sensor? = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+        val accelSensor: Sensor? = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         if (magneticSensor == null || accelSensor == null) return@also
         var valuesMagnet: FloatArray? = null
         var valuesAccel: FloatArray? = null

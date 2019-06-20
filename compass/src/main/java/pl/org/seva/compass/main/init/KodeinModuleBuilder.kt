@@ -17,13 +17,20 @@
  * If you like this program, consider donating bitcoin: bc1qncxh5xs6erq6w4qz3a7xl7f50agrgn3w58dsfp
  */
 
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package pl.org.seva.compass.main.init
 
 import android.content.Context
 import android.location.Geocoder
+import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.kodein.di.Kodein
 import org.kodein.di.conf.global
-import org.kodein.di.generic.*
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.provider
+import org.kodein.di.generic.singleton
 import pl.org.seva.compass.compass.CompassViewModel
 import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.main.Permissions
@@ -41,7 +48,17 @@ class KodeinModuleBuilder(private val ctx: Context) {
         bind<Geocoder>() with singleton { Geocoder(ctx, Locale.getDefault()) }
         bind<Permissions>() with singleton { Permissions() }
         bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
-        bind<RotationChannelFactory>() with singleton { RotationChannelFactory(ctx) }
-        bind<CompassViewModel>() with provider { CompassViewModel(instance(), instance()) }
+        bind<() -> ReceiveChannel<Float>>(ROTATION) with
+                singleton { { RotationChannelFactory(ctx).getRotationChannel() } }
+        bind<() -> ReceiveChannel<LatLng>>(LOCATION) with
+                singleton { { LocationChannelFactory(ctx).getLocationChannel() } }
+        bind<CompassViewModel>() with provider { CompassViewModel(
+                getRotation = instance(ROTATION),
+                getLocation = instance(LOCATION)) }
+    }
+
+    companion object {
+        const val ROTATION = "rotation"
+        const val LOCATION = "location"
     }
 }

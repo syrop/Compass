@@ -22,23 +22,22 @@ package pl.org.seva.compass.compass
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.map
-import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.main.channelLiveData
-import pl.org.seva.compass.rotation.RotationChannelFactory
 import kotlin.math.*
 
 class CompassViewModel(
-        rotationChannelFactory: RotationChannelFactory,
-        locationChannelFactory: LocationChannelFactory) : ViewModel() {
+        getRotation: () -> ReceiveChannel<Float>,
+        getLocation: () -> ReceiveChannel<LatLng>) : ViewModel() {
 
     private val mutableDestination by lazy { MutableLiveData<DestinationModel?>() }
     @ExperimentalCoroutinesApi
-    val rotation by channelLiveData { rotationChannelFactory.getRotationChannel() }
+    val rotation by channelLiveData { getRotation() }
 
     @ExperimentalCoroutinesApi
     val direction by channelLiveData {
-            locationChannelFactory.getLocationChannel().map { location ->
+            getLocation().map { location ->
                 withContext(Dispatchers.Default) {
                     val distance = distance(location)
                     val bearing = bearing(location)
