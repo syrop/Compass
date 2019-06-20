@@ -27,7 +27,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.OnSuccessListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -68,9 +67,9 @@ class LocationChannelFactory(ctx: Context) {
 
     private suspend fun getLastLocation(): LatLng? = lastLocation ?:
             suspendCancellableCoroutine { continuation ->
-                client.lastLocation.addOnSuccessListener(OnSuccessListener {
+                client.lastLocation.addOnSuccessListener {
                     continuation.resume(it?.toLatLng())
-                })
+                }
             }
 
     private fun Location.toLatLng() = LatLng(latitude, longitude)
