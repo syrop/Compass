@@ -7,7 +7,7 @@ import org.kodein.di.TT
 import org.kodein.di.conf.global
 import org.kodein.di.direct
 
-object InjectedVMFactory : ViewModelProvider.Factory {
+object KodeinVMFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
             Kodein.global.direct.Instance(TT(modelClass))
 }
