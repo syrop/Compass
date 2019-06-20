@@ -36,6 +36,7 @@ import pl.org.seva.compass.compass.DestinationModel
 import pl.org.seva.compass.compass.DirectionModel
 import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.rotation.RotationChannelFactory
+import kotlin.coroutines.EmptyCoroutineContext
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -88,7 +89,12 @@ class CompassViewModelTest {
         `when`(mockLocationChannelFactory.getLocationChannel()).thenReturn(locationChannel)
         `when`(mockRotationChannelFactory.getRotationChannel()).thenReturn(rotationChannel)
 
-        val vm = CompassViewModel(mockRotationChannelFactory, mockLocationChannelFactory)
+        val liveDataJob = Job()
+
+        val vm = CompassViewModel(
+                mockRotationChannelFactory,
+                mockLocationChannelFactory,
+                EmptyCoroutineContext + liveDataJob)
         vm.setDestination(DestinationModel(HOME, ""))
 
         val destination = vm.direction
@@ -97,13 +103,13 @@ class CompassViewModelTest {
             distance = it.distance
         }
         destination.observeForever(distanceObserver)
-        delay(INITIAL_DELAY)
+        delay(STABILIZE_DELAY)
         progress()
         progress()
         assertFalse(locationChannel.isClosedForReceive)
         assertFalse(locationChannel.isClosedForSend)
-        destination.removeObserver(distanceObserver)
-        delay(6000L)
+        liveDataJob.cancel()
+        delay(STABILIZE_DELAY)
         assertTrue(locationChannel.isClosedForReceive)
         assertTrue(locationChannel.isClosedForSend)
 
@@ -113,7 +119,7 @@ class CompassViewModelTest {
     companion object {
         val HOME = LatLng(52.233333, 21.016667)
         private const val LATITUDE_STEP = 0.001
-        private const val INITIAL_DELAY = 50L
+        private const val STABILIZE_DELAY = 50L
         private const val INTERVAL = 100L
     }
 }

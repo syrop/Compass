@@ -26,18 +26,21 @@ import kotlinx.coroutines.channels.map
 import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.main.channelLiveData
 import pl.org.seva.compass.rotation.RotationChannelFactory
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.math.*
 
 class CompassViewModel(
         rotationChannelFactory: RotationChannelFactory,
-        locationChannelFactory: LocationChannelFactory) : ViewModel() {
+        locationChannelFactory: LocationChannelFactory,
+        liveDataContext: CoroutineContext = EmptyCoroutineContext) : ViewModel() {
 
     private val mutableDestination by lazy { MutableLiveData<DestinationModel?>() }
     @ExperimentalCoroutinesApi
-    val rotation by channelLiveData { rotationChannelFactory.getRotationChannel() }
+    val rotation by channelLiveData(liveDataContext) { rotationChannelFactory.getRotationChannel() }
 
     @ExperimentalCoroutinesApi
-    val direction by channelLiveData {
+    val direction by channelLiveData(liveDataContext) {
             locationChannelFactory.getLocationChannel().map { location ->
                 withContext(Dispatchers.Default) {
                     val distance = distance(location)

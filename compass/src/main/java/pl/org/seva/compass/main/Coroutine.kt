@@ -22,9 +22,13 @@ package pl.org.seva.compass.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
-fun <T> channelLiveData(block: () -> ReceiveChannel<T>): Lazy<LiveData<T>> = lazy {
-    liveData {
+fun <T> channelLiveData(
+        context: CoroutineContext = EmptyCoroutineContext,
+        block: () -> ReceiveChannel<T>): Lazy<LiveData<T>> = lazy {
+    liveData(context) {
         val channel = block()
         try {
             while (true) {
