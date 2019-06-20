@@ -23,12 +23,14 @@ import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.map
-import pl.org.seva.compass.location.locationChannelFactory
+import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.main.channelLiveData
-import pl.org.seva.compass.rotation.rotationChannelFactory
+import pl.org.seva.compass.rotation.RotationChannelFactory
 import kotlin.math.*
 
-class CompassViewModel : ViewModel() {
+class CompassViewModel(
+        rotationChannelFactory: RotationChannelFactory,
+        locationChannelFactory: LocationChannelFactory) : ViewModel() {
 
     private val mutableDestination by lazy { MutableLiveData<DestinationModel?>() }
     @ExperimentalCoroutinesApi

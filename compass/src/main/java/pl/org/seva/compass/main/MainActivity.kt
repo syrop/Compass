@@ -25,6 +25,9 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import kotlinx.android.synthetic.main.act_main.*
+import org.kodein.di.Kodein
+import org.kodein.di.conf.global
+import org.kodein.di.generic.on
 import pl.org.seva.compass.R
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.act_main)
         setSupportActionBar(toolbar)
         NavigationUI.setupActionBarWithNavController(this, navController)
+        Kodein.global.on(context = this)
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp()

@@ -23,17 +23,12 @@ import android.content.Context
 import android.location.Geocoder
 import org.kodein.di.Kodein
 import org.kodein.di.conf.global
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.multiton
-import org.kodein.di.generic.singleton
-import pl.org.seva.compass.BuildConfig
+import org.kodein.di.generic.*
+import pl.org.seva.compass.compass.CompassViewModel
 import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.main.Permissions
 import pl.org.seva.compass.rotation.RotationChannelFactory
 import java.util.*
-import java.util.logging.Filter
-import java.util.logging.Logger
 
 val Context.module get() = KodeinModuleBuilder(this).build()
 
@@ -47,5 +42,6 @@ class KodeinModuleBuilder(private val ctx: Context) {
         bind<Permissions>() with singleton { Permissions() }
         bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
         bind<RotationChannelFactory>() with singleton { RotationChannelFactory(ctx) }
+        bind<CompassViewModel>() with provider { CompassViewModel(instance(), instance()) }
     }
 }

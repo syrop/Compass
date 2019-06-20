@@ -25,9 +25,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.sendBlocking
-import pl.org.seva.compass.main.init.instance
-
-val rotationChannelFactory by instance<RotationChannelFactory>()
 
 class RotationChannelFactory(ctx: Context) {
 

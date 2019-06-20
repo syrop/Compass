@@ -29,12 +29,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import pl.org.seva.compass.R
 import pl.org.seva.compass.main.extension.nav
 import pl.org.seva.compass.main.extension.set
+import pl.org.seva.compass.main.init.InjectedVMFactory
 import pl.org.seva.compass.main.permissions
 import pl.org.seva.compass.main.requestLocationPermission
 
 class CompassFragment : Fragment(R.layout.fr_compass) {
 
-    private val viewModel by navGraphViewModels<CompassViewModel>(R.id.nav_graph)
+    private val viewModel
+            by navGraphViewModels<CompassViewModel>(R.id.nav_graph) { InjectedVMFactory }
 
     @ExperimentalCoroutinesApi
     override fun onActivityCreated(savedInstanceState: Bundle?) {

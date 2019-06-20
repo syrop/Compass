@@ -34,10 +34,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import pl.org.seva.compass.main.init.instance
 import kotlin.coroutines.resume
-
-val locationChannelFactory by instance<LocationChannelFactory>()
 
 class LocationChannelFactory(ctx: Context) {
 
