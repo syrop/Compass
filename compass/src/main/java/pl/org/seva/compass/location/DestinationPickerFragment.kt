@@ -30,8 +30,12 @@ import pl.org.seva.compass.R
 import pl.org.seva.compass.compass.CompassViewModel
 import pl.org.seva.compass.compass.DestinationModel
 import pl.org.seva.compass.main.extension.*
+import pl.org.seva.compass.main.init.InjectedVMFactory
 
 class DestinationPickerFragment : Fragment(R.layout.fr_destination_picker) {
+
+    private val viewModel
+            by navGraphViewModels<CompassViewModel>(R.id.nav_graph) { InjectedVMFactory }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         fun onLocationChanged(l: DestinationModel?) {
@@ -42,7 +46,6 @@ class DestinationPickerFragment : Fragment(R.layout.fr_destination_picker) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
 
-        val viewModel = navGraphViewModels<CompassViewModel>(R.id.nav_graph).value
         delete_location_fab { viewModel.setDestination(null) }
         (viewModel.destination to this) { onLocationChanged(it) }
 
