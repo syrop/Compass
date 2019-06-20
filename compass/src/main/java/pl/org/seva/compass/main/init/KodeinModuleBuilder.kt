@@ -23,8 +23,6 @@ package pl.org.seva.compass.main.init
 
 import android.content.Context
 import android.location.Geocoder
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.channels.ReceiveChannel
 import org.kodein.di.Kodein
 import org.kodein.di.conf.global
 import org.kodein.di.generic.bind
@@ -32,8 +30,10 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
 import pl.org.seva.compass.compass.CompassViewModel
+import pl.org.seva.compass.location.DefaultLocationChannelFactory
 import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.main.Permissions
+import pl.org.seva.compass.rotation.DefaultRotationChannelFactory
 import pl.org.seva.compass.rotation.RotationChannelFactory
 import java.util.*
 
@@ -47,18 +47,9 @@ class KodeinModuleBuilder(private val ctx: Context) {
         bind<Bootstrap>() with singleton { Bootstrap() }
         bind<Geocoder>() with singleton { Geocoder(ctx, Locale.getDefault()) }
         bind<Permissions>() with singleton { Permissions() }
-        bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
-        bind<ReceiveChannel<Float>>(ROTATION) with
-                singleton { RotationChannelFactory(ctx).getRotationChannel() }
-        bind<ReceiveChannel<LatLng>>(LOCATION) with
-                singleton { LocationChannelFactory(ctx).getLocationChannel() }
-        bind<CompassViewModel>() with provider { CompassViewModel(
-                rotationChannel = instance(ROTATION),
-                locationChannel = instance(LOCATION)) }
-    }
-
-    companion object {
-        const val ROTATION = "rotation"
-        const val LOCATION = "location"
+        bind<DefaultLocationChannelFactory>() with singleton { DefaultLocationChannelFactory(ctx) }
+        bind<RotationChannelFactory>() with singleton { DefaultRotationChannelFactory(ctx) }
+        bind<LocationChannelFactory>() with singleton { DefaultLocationChannelFactory(ctx) }
+        bind<CompassViewModel>() with provider { CompassViewModel(instance(), instance()) }
     }
 }
