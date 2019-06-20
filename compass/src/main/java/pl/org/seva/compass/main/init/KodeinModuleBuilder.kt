@@ -48,13 +48,13 @@ class KodeinModuleBuilder(private val ctx: Context) {
         bind<Geocoder>() with singleton { Geocoder(ctx, Locale.getDefault()) }
         bind<Permissions>() with singleton { Permissions() }
         bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
-        bind<() -> ReceiveChannel<Float>>(ROTATION) with
-                singleton { { RotationChannelFactory(ctx).getRotationChannel() } }
-        bind<() -> ReceiveChannel<LatLng>>(LOCATION) with
-                singleton { { LocationChannelFactory(ctx).getLocationChannel() } }
+        bind<ReceiveChannel<Float>>(ROTATION) with
+                singleton { RotationChannelFactory(ctx).getRotationChannel() }
+        bind<ReceiveChannel<LatLng>>(LOCATION) with
+                singleton { LocationChannelFactory(ctx).getLocationChannel() }
         bind<CompassViewModel>() with provider { CompassViewModel(
-                getRotation = instance(ROTATION),
-                getLocation = instance(LOCATION)) }
+                rotationChannel = instance(ROTATION),
+                locationChannel = instance(LOCATION)) }
     }
 
     companion object {

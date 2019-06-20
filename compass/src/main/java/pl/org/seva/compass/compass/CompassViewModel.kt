@@ -28,16 +28,16 @@ import pl.org.seva.compass.main.channelLiveData
 import kotlin.math.*
 
 class CompassViewModel(
-        getRotation: () -> ReceiveChannel<Float>,
-        getLocation: () -> ReceiveChannel<LatLng>) : ViewModel() {
+        rotationChannel: ReceiveChannel<Float>,
+        locationChannel: ReceiveChannel<LatLng>) : ViewModel() {
 
     private val mutableDestination by lazy { MutableLiveData<DestinationModel?>() }
     @ExperimentalCoroutinesApi
-    val rotation by channelLiveData { getRotation() }
+    val rotation by channelLiveData { rotationChannel }
 
     @ExperimentalCoroutinesApi
     val direction by channelLiveData {
-            getLocation().map { location ->
+            locationChannel.map { location ->
                 withContext(Dispatchers.Default) {
                     val distance = distance(location)
                     val bearing = bearing(location)
