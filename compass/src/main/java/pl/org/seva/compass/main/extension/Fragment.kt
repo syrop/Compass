@@ -40,7 +40,7 @@ fun Fragment.nav(@IdRes resId: Int): Boolean {
 fun Fragment.back() = findNavController().popBackStack()
 
 fun Fragment.prefs(name: String): SharedPreferences =
-        context!!.getSharedPreferences(name, Context.MODE_PRIVATE)
+        requireContext().getSharedPreferences(name, Context.MODE_PRIVATE)
 
 fun Fragment.enableMyLocationOnResume(map: GoogleMap) {
     lifecycle.addObserver(object : LifecycleEventObserver {
@@ -53,5 +53,5 @@ fun Fragment.enableMyLocationOnResume(map: GoogleMap) {
 }
 
 fun Fragment.checkPermission(permission: String) =
-        ContextCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
 
