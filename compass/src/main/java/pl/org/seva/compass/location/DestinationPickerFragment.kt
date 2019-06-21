@@ -49,11 +49,10 @@ class DestinationPickerFragment : Fragment(R.layout.fr_destination_picker) {
         delete_location_fab { viewModel.setDestination(null) }
         (viewModel.destination to this) { onLocationChanged(it) }
 
-        @Suppress("ReplaceSingleLineLet")
         createInteractiveMapHolder(R.id.map) {
             prefs = prefs(SHARED_PREFERENCES_TAG)
             onLocationSet = { viewModel.setDestination(it) }
-        }.let { holder ->
+        }.also { holder ->
             (holder.liveMap to this) { map ->
                 enableMyLocationOnResume(map)
                 (viewModel.destination to this) { holder.markPosition(it?.location) }
