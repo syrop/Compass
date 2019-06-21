@@ -76,7 +76,10 @@ class CompassViewModelTest {
         val locationChannel = Channel<LatLng>(Channel.CONFLATED)
         val rotationChannel = Channel<Float>(Channel.CONFLATED)
 
-        val job = launch(Dispatchers.IO) {
+        `when`(mockLocationChannelFactory.getLocationChannel()).thenReturn(locationChannel)
+        `when`(mockRotationChannelFactory.getRotationChannel()).thenReturn(rotationChannel)
+
+        launch(Dispatchers.IO) {
             locationChannel.send(HOME)
             var lat = HOME.latitude
             while (true) {
@@ -85,9 +88,6 @@ class CompassViewModelTest {
                 locationChannel.send(LatLng(lat, HOME.longitude))
             }
         }
-
-        `when`(mockLocationChannelFactory.getLocationChannel()).thenReturn(locationChannel)
-        `when`(mockRotationChannelFactory.getRotationChannel()).thenReturn(rotationChannel)
 
         val liveDataJob = Job()
 
@@ -112,8 +112,6 @@ class CompassViewModelTest {
         delay(STABILIZE_DELAY)
         assertTrue(locationChannel.isClosedForReceive)
         assertTrue(locationChannel.isClosedForSend)
-
-        job.cancel()
     }
 
     companion object {
