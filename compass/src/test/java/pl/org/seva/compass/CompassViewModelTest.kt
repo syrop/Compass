@@ -36,7 +36,6 @@ import pl.org.seva.compass.compass.DestinationModel
 import pl.org.seva.compass.compass.DirectionModel
 import pl.org.seva.compass.location.LocationChannelFactory
 import pl.org.seva.compass.rotation.RotationChannelFactory
-import kotlin.coroutines.EmptyCoroutineContext
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -94,7 +93,7 @@ class CompassViewModelTest {
         val vm = CompassViewModel(
                 mockRotationChannelFactory,
                 mockLocationChannelFactory,
-                EmptyCoroutineContext + liveDataJob)
+                coroutineContext + liveDataJob)
         vm.setDestination(DestinationModel(HOME, ""))
 
         val destination = vm.direction
