@@ -41,7 +41,7 @@ inline fun <reified T : Any> instance() = Kodein.global.instance<T>()
 
 class KodeinModuleBuilder(private val ctx: Context) {
 
-    fun build() = Kodein.Module("main") {
+    fun build() = Kodein.Module(MAIN_MODULE_NAME) {
         bind<Bootstrap>() with singleton { Bootstrap() }
         bind<Geocoder>() with singleton { Geocoder(ctx, Locale.getDefault()) }
         bind<Permissions>() with singleton { Permissions() }
@@ -49,5 +49,9 @@ class KodeinModuleBuilder(private val ctx: Context) {
         bind<RotationChannelFactory>() with singleton { RotationChannelFactory(ctx) }
         bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
         bind<CompassViewModel>() with provider { CompassViewModel(instance(), instance()) }
+    }
+
+    companion object {
+        private const val MAIN_MODULE_NAME = "main"
     }
 }
