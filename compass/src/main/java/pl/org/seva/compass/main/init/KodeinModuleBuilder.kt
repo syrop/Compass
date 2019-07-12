@@ -47,7 +47,6 @@ class KodeinModuleBuilder(private val ctx: Context) {
         bind<Permissions>() with singleton { Permissions() }
         bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
         bind<RotationChannelFactory>() with singleton { RotationChannelFactory(ctx) }
-        bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
         bind<CompassViewModel>() with provider { CompassViewModel(instance(), instance()) }
     }
 
