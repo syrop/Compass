@@ -17,8 +17,6 @@
  * If you like this program, consider donating bitcoin: bc1qncxh5xs6erq6w4qz3a7xl7f50agrgn3w58dsfp
  */
 
-package pl.org.seva.compass.compass
+package pl.org.seva.compass.location
 
-import com.google.android.gms.maps.model.LatLng
-
-data class DestinationModel(val location: LatLng, val address: String)
+data class DirectionModel(val distance: Double, val degrees: Float)

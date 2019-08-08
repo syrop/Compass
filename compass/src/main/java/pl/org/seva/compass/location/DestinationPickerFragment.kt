@@ -28,7 +28,6 @@ import androidx.navigation.navGraphViewModels
 import kotlinx.android.synthetic.main.fr_destination_picker.*
 import pl.org.seva.compass.R
 import pl.org.seva.compass.compass.CompassViewModel
-import pl.org.seva.compass.compass.DestinationModel
 import pl.org.seva.compass.main.extension.*
 import pl.org.seva.compass.main.init.KodeinVMFactory
 

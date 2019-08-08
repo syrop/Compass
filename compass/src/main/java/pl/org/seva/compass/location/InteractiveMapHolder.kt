@@ -24,7 +24,6 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import pl.org.seva.compass.compass.DestinationModel
 import pl.org.seva.compass.main.init.instance
 import java.lang.Exception
 

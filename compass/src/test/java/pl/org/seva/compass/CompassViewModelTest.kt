@@ -24,6 +24,7 @@ import androidx.lifecycle.Observer
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.*
@@ -32,9 +33,9 @@ import org.mockito.Mockito.`when`
 
 import org.mockito.Mockito.mock
 import pl.org.seva.compass.compass.CompassViewModel
-import pl.org.seva.compass.compass.DestinationModel
-import pl.org.seva.compass.compass.DirectionModel
-import pl.org.seva.compass.location.LocationChannelFactory
+import pl.org.seva.compass.location.DestinationModel
+import pl.org.seva.compass.location.DirectionModel
+import pl.org.seva.compass.location.LocationFlowFactory
 import pl.org.seva.compass.rotation.RotationChannelFactory
 
 @ObsoleteCoroutinesApi
@@ -69,30 +70,35 @@ class CompassViewModelTest {
             lastDistance = distance
         }
 
-        val mockLocationChannelFactory: LocationChannelFactory = mock(LocationChannelFactory::class.java)
+        val mockLocationFlowFactory: LocationFlowFactory = mock(LocationFlowFactory::class.java)
         val mockRotationChannelFactory: RotationChannelFactory = mock(RotationChannelFactory::class.java)
 
-        val locationChannel = Channel<LatLng>(Channel.CONFLATED)
+        var locationClosed = false
+        val locationFlow = channelFlow {
+            offer(HOME)
+            var lat = HOME.latitude
+            try {
+                while (true) {
+                    delay(INTERVAL)
+                    lat += LATITUDE_STEP
+                    offer(LatLng(lat, HOME.longitude))
+                }
+            }
+            finally {
+                locationClosed = true
+            }
+        }.flowOn(Dispatchers.IO)
+
         val rotationChannel = Channel<Float>(Channel.CONFLATED)
 
-        `when`(mockLocationChannelFactory.getLocationChannel()).thenReturn(locationChannel)
+        `when`(mockLocationFlowFactory.getLocationFlow()).thenReturn(locationFlow)
         `when`(mockRotationChannelFactory.getRotationChannel()).thenReturn(rotationChannel)
-
-        launch(Dispatchers.IO) {
-            locationChannel.send(HOME)
-            var lat = HOME.latitude
-            while (true) {
-                delay(INTERVAL)
-                lat += LATITUDE_STEP
-                locationChannel.send(LatLng(lat, HOME.longitude))
-            }
-        }
 
         val liveDataJob = Job()
 
         val vm = CompassViewModel(
                 mockRotationChannelFactory,
-                mockLocationChannelFactory,
+                mockLocationFlowFactory,
                 coroutineContext + liveDataJob)
         vm.setDestination(DestinationModel(HOME, ""))
 
@@ -105,12 +111,10 @@ class CompassViewModelTest {
         delay(STABILIZE_DELAY)
         progress()
         progress()
-        assertFalse(locationChannel.isClosedForReceive)
-        assertFalse(locationChannel.isClosedForSend)
+        assertFalse(locationClosed)
         liveDataJob.cancel()
         delay(STABILIZE_DELAY)
-        assertTrue(locationChannel.isClosedForReceive)
-        assertTrue(locationChannel.isClosedForSend)
+        assertTrue(locationClosed)
     }
 
     companion object {

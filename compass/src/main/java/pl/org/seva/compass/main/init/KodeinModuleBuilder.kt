@@ -30,7 +30,7 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
 import pl.org.seva.compass.compass.CompassViewModel
-import pl.org.seva.compass.location.LocationChannelFactory
+import pl.org.seva.compass.location.LocationFlowFactory
 import pl.org.seva.compass.main.Permissions
 import pl.org.seva.compass.rotation.RotationChannelFactory
 import java.util.*
@@ -45,7 +45,7 @@ class KodeinModuleBuilder(private val ctx: Context) {
         bind<Bootstrap>() with singleton { Bootstrap() }
         bind<Geocoder>() with singleton { Geocoder(ctx, Locale.getDefault()) }
         bind<Permissions>() with singleton { Permissions() }
-        bind<LocationChannelFactory>() with singleton { LocationChannelFactory(ctx) }
+        bind<LocationFlowFactory>() with singleton { LocationFlowFactory(ctx) }
         bind<RotationChannelFactory>() with singleton { RotationChannelFactory(ctx) }
         bind<CompassViewModel>() with provider { CompassViewModel(instance(), instance()) }
     }

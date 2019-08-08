@@ -22,17 +22,19 @@ package pl.org.seva.compass.compass
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.map
-import pl.org.seva.compass.location.LocationChannelFactory
+import kotlinx.coroutines.flow.map
+import pl.org.seva.compass.location.DestinationModel
+import pl.org.seva.compass.location.LocationFlowFactory
+import pl.org.seva.compass.location.toDirection
 import pl.org.seva.compass.main.channelLiveData
+import pl.org.seva.compass.main.flowLiveData
 import pl.org.seva.compass.rotation.RotationChannelFactory
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.math.*
 
 class CompassViewModel(
         rotationChannelFactory: RotationChannelFactory,
-        locationChannelFactory: LocationChannelFactory,
+        locationFlowFactory: LocationFlowFactory,
         liveDataContext: CoroutineContext = EmptyCoroutineContext) : ViewModel() {
 
     private val mutableDestination by lazy { MutableLiveData<DestinationModel?>() }
@@ -40,14 +42,8 @@ class CompassViewModel(
     val rotation by channelLiveData(liveDataContext) { rotationChannelFactory.getRotationChannel() }
 
     @ExperimentalCoroutinesApi
-    val direction by channelLiveData(liveDataContext) {
-            locationChannelFactory.getLocationChannel().map { location ->
-                withContext(Dispatchers.Default) {
-                    val distance = distance(location)
-                    val bearing = bearing(location)
-                    DirectionModel(distance.await(), bearing.await())
-                }
-            }
+    val direction by flowLiveData(liveDataContext) {
+            locationFlowFactory.getLocationFlow().map { it.toDirection(destinationLocation) }
     }
     val destination get() = mutableDestination as LiveData<DestinationModel?>
 
@@ -58,29 +54,5 @@ class CompassViewModel(
             destinationLocation = destination.location
         }
         mutableDestination.value = destination
-    }
-
-    private fun CoroutineScope.distance(location: LatLng) = async {
-        val dLat = Math.toRadians(destinationLocation.latitude - location.latitude)
-        val dLon = Math.toRadians(destinationLocation.longitude - location.longitude)
-        val radLatLoc = Math.toRadians(location.latitude)
-        val radLatDest = Math.toRadians(destinationLocation.latitude)
-        val a = sin(dLat / 2).pow(2) +
-                sin(dLon / 2) * sin(dLon / 2) * cos(radLatLoc) * cos(radLatDest)
-        val c = 2 * asin(sqrt(a))
-        RADIUS_KM * c
-    }
-
-    private fun CoroutineScope.bearing(location: LatLng) = async {
-        val longDiff = destinationLocation.longitude - location.longitude
-        val y = sin(longDiff) * cos(destinationLocation.latitude)
-        val x = cos(location.latitude) *
-                sin(destinationLocation.latitude) - sin(location.latitude) *
-                cos(destinationLocation.latitude) * cos(longDiff)
-        ((Math.toDegrees(atan2(y, x)) + 360 ) % 360).toFloat()
-    }
-
-    companion object {
-        const val RADIUS_KM = 6371.0
     }
 }
