@@ -35,8 +35,6 @@ import pl.org.seva.compass.main.Permissions
 import pl.org.seva.compass.rotation.RotationFlowFactory
 import java.util.*
 
-val Context.module get() = KodeinModuleBuilder(this).build()
-
 inline fun <reified T : Any> instance() = Kodein.global.instance<T>()
 
 class KodeinModuleBuilder(private val ctx: Context) {
