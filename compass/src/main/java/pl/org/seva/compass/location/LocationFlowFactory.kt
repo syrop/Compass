@@ -49,7 +49,7 @@ open class LocationFlowFactory(ctx: Context) {
     private var lastLocation: LatLng? = null
 
     @ExperimentalCoroutinesApi
-    open fun getLocationFlow() = callbackFlow {
+    open fun getLocationFlow() = callbackFlow<LatLng> {
         val lastLocationJob = GlobalScope.launch {
             lastLocation = getLastLocation()?.also { sendBlocking(it) }
         }
