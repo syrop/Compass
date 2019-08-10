@@ -26,20 +26,19 @@ import kotlinx.coroutines.flow.map
 import pl.org.seva.compass.location.DestinationModel
 import pl.org.seva.compass.location.LocationFlowFactory
 import pl.org.seva.compass.location.toDirection
-import pl.org.seva.compass.main.channelLiveData
 import pl.org.seva.compass.main.flowLiveData
-import pl.org.seva.compass.rotation.RotationChannelFactory
+import pl.org.seva.compass.rotation.RotationFlowFactory
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 class CompassViewModel(
-        rotationChannelFactory: RotationChannelFactory,
+        rotationFlowFactory: RotationFlowFactory,
         locationFlowFactory: LocationFlowFactory,
         liveDataContext: CoroutineContext = EmptyCoroutineContext) : ViewModel() {
 
     private val mutableDestination by lazy { MutableLiveData<DestinationModel?>() }
     @ExperimentalCoroutinesApi
-    val rotation by channelLiveData(liveDataContext) { rotationChannelFactory.getRotationChannel() }
+    val rotation by flowLiveData(liveDataContext) { rotationFlowFactory.getRotationFlow() }
 
     @ExperimentalCoroutinesApi
     val direction by flowLiveData(liveDataContext) {

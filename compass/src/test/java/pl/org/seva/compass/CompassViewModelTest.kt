@@ -36,7 +36,7 @@ import pl.org.seva.compass.compass.CompassViewModel
 import pl.org.seva.compass.location.DestinationModel
 import pl.org.seva.compass.location.DirectionModel
 import pl.org.seva.compass.location.LocationFlowFactory
-import pl.org.seva.compass.rotation.RotationChannelFactory
+import pl.org.seva.compass.rotation.RotationFlowFactory
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -71,7 +71,7 @@ class CompassViewModelTest {
         }
 
         val mockLocationFlowFactory: LocationFlowFactory = mock(LocationFlowFactory::class.java)
-        val mockRotationChannelFactory: RotationChannelFactory = mock(RotationChannelFactory::class.java)
+        val mockRotationFlowFactory: RotationFlowFactory = mock(RotationFlowFactory::class.java)
 
         var locationClosed = false
         val locationFlow = channelFlow {
@@ -89,15 +89,15 @@ class CompassViewModelTest {
             }
         }.flowOn(Dispatchers.IO)
 
-        val rotationChannel = Channel<Float>(Channel.CONFLATED)
+        val rotationFlow = flow<Float> {}
 
         `when`(mockLocationFlowFactory.getLocationFlow()).thenReturn(locationFlow)
-        `when`(mockRotationChannelFactory.getRotationChannel()).thenReturn(rotationChannel)
+        `when`(mockRotationFlowFactory.getRotationFlow()).thenReturn(rotationFlow)
 
         val liveDataJob = Job()
 
         val vm = CompassViewModel(
-                mockRotationChannelFactory,
+                mockRotationFlowFactory,
                 mockLocationFlowFactory,
                 coroutineContext + liveDataJob)
         vm.setDestination(DestinationModel(HOME, ""))

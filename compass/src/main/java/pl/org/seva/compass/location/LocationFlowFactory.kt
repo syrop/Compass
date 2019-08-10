@@ -29,7 +29,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -47,19 +50,19 @@ open class LocationFlowFactory(ctx: Context) {
 
     @ExperimentalCoroutinesApi
     open fun getLocationFlow() = callbackFlow {
-            val lastLocationJob = GlobalScope.launch {
-                lastLocation = getLastLocation()?.also { offer(it) }
-            }
-            val callback = object : LocationCallback() {
-                override fun onLocationResult(result: LocationResult) {
-                    lastLocationJob.cancel()
-                    lastLocation = result.lastLocation.toLatLng().also { offer(it) }
-                }
-            }
-
-            client.requestLocationUpdates(request, callback, Looper.myLooper())
-            awaitClose { client.removeLocationUpdates(callback) }
+        val lastLocationJob = GlobalScope.launch {
+            lastLocation = getLastLocation()?.also { sendBlocking(it) }
         }
+        val callback = object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                lastLocationJob.cancel()
+                lastLocation = result.lastLocation.toLatLng().also { sendBlocking(it) }
+            }
+        }
+
+        client.requestLocationUpdates(request, callback, Looper.myLooper())
+        awaitClose { client.removeLocationUpdates(callback) }
+    }.buffer(Channel.CONFLATED)
 
     private suspend fun getLastLocation(): LatLng? = lastLocation ?:
             suspendCancellableCoroutine { continuation ->
