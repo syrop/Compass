@@ -22,16 +22,19 @@ package pl.org.seva.compass.main
 import android.app.Application
 import org.kodein.di.Kodein
 import org.kodein.di.conf.global
+import pl.org.seva.compass.main.init.Bootstrap
 import pl.org.seva.compass.main.init.KodeinModuleBuilder
-import pl.org.seva.compass.main.init.bootstrap
+import pl.org.seva.compass.main.init.instance
 
 @Suppress("unused")
 class CompassApplication : Application() {
 
-    init { Kodein.global.addImport(KodeinModuleBuilder(this).build()) }
+    private val bootstrap by instance<Bootstrap>()
 
     override fun onCreate() {
         super.onCreate()
+
+        Kodein.global.addImport(KodeinModuleBuilder(this).build())
         bootstrap.boot()
     }
 }
