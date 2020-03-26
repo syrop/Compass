@@ -34,7 +34,8 @@ import kotlin.coroutines.EmptyCoroutineContext
 class CompassViewModel(
         rotationFlowFactory: RotationFlowFactory,
         locationFlowFactory: LocationFlowFactory,
-        liveDataContext: CoroutineContext = EmptyCoroutineContext) : ViewModel() {
+        liveDataContext: CoroutineContext = EmptyCoroutineContext,
+) : ViewModel() {
 
     private val mutableDestination by lazy { MutableLiveData<DestinationModel?>() }
     @ExperimentalCoroutinesApi

@@ -42,8 +42,8 @@ class Permissions {
             fragment: Fragment,
             requestCode: Int,
             permissions: Array<String>,
-            grantResults: IntArray) {
-
+            grantResults: IntArray,
+    ) {
         val vm = fragment.navGraphViewModels<ViewModel>(R.id.nav_graph).value
         val granted = vm.granted
         val denied = vm.denied
