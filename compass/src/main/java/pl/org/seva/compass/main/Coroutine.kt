@@ -28,7 +28,8 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 fun <T> flowLiveData(
         context: CoroutineContext = EmptyCoroutineContext,
-        block: () -> Flow<T>): Lazy<LiveData<T>> = lazy {
+        block: () -> Flow<T>,
+): Lazy<LiveData<T>> = lazy {
     liveData(context) {
         val flow = block()
         flow.collect { emit(it) }
